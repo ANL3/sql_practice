@@ -46,6 +46,70 @@ where admissions.diagnosis='Epilepsy' and doctors.first_name='Lisa'
 --1. patient_id
 --2. the numerical length of patient's last_name
 --3. year of patient's birth_date
+
 select distinct(patients.patient_id),concat(patients.patient_id,len(patients.last_name),year(patients.birth_date)) As temp_password
 FROM patients join admissions on patients.patient_id=admissions.patient_id;
+
+--Q5--Each admission costs $50 for patients without insurance, and $10 for patients with insurance. 
+--All patients with an even patient_id have insurance.
+--Give each patient a 'Yes' if they have insurance, and a 'No' if they don't have insurance. 
+--Add up the admission_total cost for each has_insurance group.
+
+select "YES",count(*)*10 from admissions where patient_id%2=0
+union
+select "NO",count(*)*50 from admissions where patient_id%2=1;
+
+SELECT 
+CASE WHEN patient_id % 2 = 0 Then 
+    'Yes'
+ELSE 
+    'No' 
+END as has_insurance,
+SUM(CASE WHEN patient_id % 2 = 0 Then 
+    10
+ELSE 
+    50 
+END) as cost_after_insurance
+FROM admissions 
+GROUP BY has_insurance;
+
+--Q6--Show the provinces that has more patients identified as 'M' than 'F'. 
+--Must only show full province_name
+
+select province_names.province_name from province_names 
+join patients on province_names.province_id=patients.province_id
+group by province_names.province_name
+having sum(case when patients.gender="M" then 1 else 0 end)  > sum(case when patients.gender="F" then 1 else 0 end) 
+
+--Q7--We are looking for a specific patient. Pull all columns for the patient who matches the following criteria:
+--First_name contains an 'r' after the first two letters.
+--Identifies their gender as 'F'
+--Born in February, May, or December
+--Their weight would be between 60kg and 80kg
+--Their patient_id is an odd number
+--They are from the city 'Kingston'
+
+select * from patients where first_name like "__r%" 
+and gender="F" 
+and 60<=weight<=80
+AND patient_id%2=1
+And city="Kingston"
+AND MONTH(birth_date) IN (2, 5, 12)
+
+--Q8--Show the percent of patients that have 'M' as their gender. 
+--Round the answer to the nearest hundreth number and in percent form.
+select concat(round(Sum(case when gender="M" then 1 else 0 end )*100.0/count(*),2),"%") as male_perc from patients
+
+SELECT CONCAT(
+    ROUND(
+      (
+        SELECT COUNT(*)
+        FROM patients
+        WHERE gender = 'M'
+      ) / CAST(COUNT(*) as float),
+      4
+    ) * 100,
+    '%'
+  ) as percent_of_male_patients
+FROM patients;
 
