@@ -113,3 +113,15 @@ SELECT CONCAT(
   ) as percent_of_male_patients
 FROM patients;
 
+--Q9--For each day display the total amount of admissions on that day. Display the amount changed from the previous date.
+
+select admission_date,count(*),count(*)-(Lag(count(*), 1) OVER()) from admissions group by admission_date
+
+--Q10--Sort the province names in ascending order in such a way that the province 'Ontario' is always on top.
+select province_name from province_names order by province_name not in ("Ontario"),province_name
+
+select province_name
+from province_names
+order by
+  (case when province_name = 'Ontario' then 0 else 1 end),
+  province_name
