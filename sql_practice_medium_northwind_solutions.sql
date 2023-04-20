@@ -17,4 +17,3 @@ GROUP BY c.category_name
 select city, company_name, contact_name,"customers" from customers
 union
 select city, company_name, contact_name,"suppliers" from suppliers
-

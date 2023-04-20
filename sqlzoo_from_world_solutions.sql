@@ -71,17 +71,3 @@ AND name LIKE '%e%'
 AND name LIKE '%i%'
 AND name LIKE '%o%'
 AND name LIKE '%u%'
-
-
-
-
-
-
-
-
-
-
-
-
-
-
